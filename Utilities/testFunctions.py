@@ -12,4 +12,7 @@ if __name__ == '__main__':
         a_v = tableFill(2,ra,dec,gals[i])
         print(a_v)
         graphMaker('..',a_v,gals[i])
+    saveTable(a_v)
+
+    #gal_names passed to saveTable and don't overwrite the file everytime
 

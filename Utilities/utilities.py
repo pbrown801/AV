@@ -202,21 +202,35 @@ def tableFill(distance, ra, dec, gal_name):
     return(a_v) #returns LIST of a_v values
 
 
-def saveTable():
-    t.add_row()
+def saveTable(a_v, gal_name):
+    av_table = Table(None)
+    Am = Column(name = 'Arcminute')
+    North = Column(name = 'North')
+    East = Column(name = 'East')
+    South = Column(name = 'South')
+    West = Column(name = 'West')
+    av_table.add_columns([Am,North, East, South, West])
+
+    for arcminute in range(0,len(av)):
+        av_table.add_row()
+        av_table[arcminute][0] = arcminute
+        for i in range(0,4):
+            av_table[arcminute][i][1] = a_v[i]
+
+    av_table.add_row()
+
     for i in range(0,5): #this adds a blank line to the table to separate queries
-        t[arc_minute+1][i] = None
+        av_table[arcminute+1][i] = None
     n = [gal_name]
     namesTable = Table([n], names=('n'))
     final_name = namesTable.to_pandas()
-    final_vals = t.to_pandas()
+    final_vals = av_table.to_pandas()
     from pandas import ExcelWriter
     with open('A_v Values.csv', appender) as f:
         final_name.to_csv(f, header =False, index = False)
     appender = 'a'
     with open('A_v Values.csv', appender) as f:
         final_vals.to_csv(f, header =True, index = False, sep = ',')
-    return(a_v)#gets the data from IRSA database and stores A_v in array
 
 def picSaver(directory, ra, dec, galaxy_name):
     """
