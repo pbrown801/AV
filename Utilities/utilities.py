@@ -79,7 +79,7 @@ def get_coords(gals):
             start_coord.append(tempCoord)
             bar.next()
         except NameResolveError:
-            print('Skipping',i,'because it couldn\'t be found.')
+            print('\nSkipping',i,'because it couldn\'t be found.')
             gals.remove(i)
     bar.finish()
     return(gals,start_coord)
@@ -117,19 +117,18 @@ def timeFix(s,m,h):
 
 #------------------------AV Utility Functions Below------------------------#
 
-def fourCoord(distance,ra,dec,cardinals):
+def fourCoord(distance,ra,dec):
     """
         Gets four coordinates a specified distance away from the center of the galaxy
         Inputs:
             distance: distance in arcminutes
             ra: radial component of the coordinate
             dec: declination component of the coordinate
-            cardinals: [None]*4 list with a spot for coordinate at each cardinal direction
         Outputs:
             cardinals: list of four coordinates *distance* arcminutes away from the center of the specified galaxy. (North, East, South, West)
     """
     ds = distance*4
-
+    cardinals = [None]*4 #n = 0, e = 1, s = 2, w = 3
     #e
     ds/=math.cos(math.radians(dec.degree))
     h = ra.hms.h
@@ -166,7 +165,37 @@ def fourCoord(distance,ra,dec,cardinals):
     #print(cardinals)
     return cardinals; #performs transformation of initial coordinate into cardinal coordinates
 
-def tableFill(distance, ra, dec, gal_name):
+
+def scaleChecker(a_v):
+    avg = np.average(a_v)
+    if avg >1.12*a_v[0][0]:
+        return True
+    else:
+        return False
+
+
+def checkCoords(ra,dec,gal_name):
+    curVal = [None]*4 #n = 0, e = 1, s = 2, w = 3
+    #get values for each arcminute
+    # print('\nChecking Av values for',gal_name)
+
+    cardinals = fourCoord(20,ra,dec)
+    for i in range(0,4):
+        C = coordinates.SkyCoord(cardinals[i], frame = 'fk5')
+        table = IrsaDust.get_extinction_table(C,show_progress = False)
+        curVal[i] = (table['A_SandF'][2])
+    avgTwenty = np.average(curVal)
+
+    cardinals = fourCoord(0,ra,dec)
+    C = coordinates.SkyCoord(cardinals[0],frame = 'fk5')
+    table = IrsaDust.get_extinction_table(C,show_progress = False)
+    centerVal = (table['A_SandF'][2])
+    if centerVal > 1.12*(avgTwenty):
+        return True
+    else:
+        return False
+
+def tableFill(distance, ra, dec, gal_name,file_obj):
     """
         Saves a table to Excel with Av values up to [distance] away from the center [ra, dec] in the four cardinal directions.
         Inputs:
@@ -186,12 +215,11 @@ def tableFill(distance, ra, dec, gal_name):
     """
     a_v = [None]*(distance+1)
     curVal = [None]*4 #n = 0, e = 1, s = 2, w = 3
-    cardinals = [None] *4 #n = 0, e = 1, s = 2, w = 3
     #get values for each arcminute
     print('\nGetting Av values for',gal_name)
     bar = ChargingBar('Fetching', max = distance+1)
     for arc_minute in range(0,distance+1):
-        cardinals = fourCoord(arc_minute, ra, dec, cardinals)
+        cardinals = fourCoord(arc_minute, ra, dec)
         for i in range(0,4):
             C = coordinates.SkyCoord(cardinals[i], frame = 'fk5')
             table = IrsaDust.get_extinction_table(C,show_progress = False)
@@ -199,10 +227,12 @@ def tableFill(distance, ra, dec, gal_name):
         a_v[arc_minute] = tuple(curVal)
         bar.next()
     bar.finish()
-    return(a_v) #returns LIST of a_v values
+    print('Generating table')
 
+    n = [gal_name]
+    namesTable = Table([n], names=('n'))
+    final_name = namesTable.to_pandas()
 
-def saveTable(a_v, gal_name):
     av_table = Table(None)
     Am = Column(name = 'Arcminute')
     North = Column(name = 'North')
@@ -210,27 +240,27 @@ def saveTable(a_v, gal_name):
     South = Column(name = 'South')
     West = Column(name = 'West')
     av_table.add_columns([Am,North, East, South, West])
-
-    for arcminute in range(0,len(av)):
+    # print(a_v)
+    for arcminute in range(0,len(a_v)):
         av_table.add_row()
         av_table[arcminute][0] = arcminute
         for i in range(0,4):
-            av_table[arcminute][i][1] = a_v[i]
-
+            av_table[arcminute][i+1] = a_v[arcminute][i]
     av_table.add_row()
+    # print(av_table)
 
     for i in range(0,5): #this adds a blank line to the table to separate queries
         av_table[arcminute+1][i] = None
-    n = [gal_name]
-    namesTable = Table([n], names=('n'))
-    final_name = namesTable.to_pandas()
+
     final_vals = av_table.to_pandas()
     from pandas import ExcelWriter
-    with open('A_v Values.csv', appender) as f:
-        final_name.to_csv(f, header =False, index = False)
-    appender = 'a'
-    with open('A_v Values.csv', appender) as f:
-        final_vals.to_csv(f, header =True, index = False, sep = ',')
+    final_name.to_csv(file_obj, header =False, index = False)
+    final_vals.to_csv(file_obj, header =True, index = False, sep = ',')
+
+    return(a_v) #returns LIST of a_v values
+
+
+
 
 def picSaver(directory, ra, dec, galaxy_name):
     """
