@@ -1,12 +1,11 @@
 # Galactic Data
-irsa.py:
+Program/runScript.py
 
 -Script to query IRSA database for galactic A_v Extinction values at a certain arcminute length away
 
 -Option to graph values and fetch IR images off IRSA
 
--Does not contain error checking, ensure names of galaxies are correct
-
+-Contains error checking
  
 
 quickdata.py:
@@ -30,4 +29,4 @@ All values are stored in .csv files and appropriate pictures and graphs are stor
 
 Included is a list of packages required for the program to work. I used Anaconda to install these and recommend the same.
 
-Created by: Tate Walker for Dr. Peter Brown at Texas A&M University, Summer 2017-Spring 2018
+Created by: Tate Walker for Dr. Peter Brown at Texas A&M University, Summer 2017-Fall 2019
