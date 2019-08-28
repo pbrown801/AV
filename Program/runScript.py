@@ -18,8 +18,8 @@ if __name__ == '__main__':
         verified = checkCoords(ra,dec,gals[i])
         if verified:
             passed.append(gals[i])
-            #a_v = tableFill(20,ra,dec,gals[i],f)
-            #graphMaker('..',a_v,gals[i])
+            a_v = tableFill(20,ra,dec,gals[i],f)
+            graphMaker('..',a_v,gals[i])
             picSaver('..',ra,dec,gals[i])
 
     f.close()
