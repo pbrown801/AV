@@ -1,0 +1,10 @@
+cp ../bibtex.bib .
+cp milkywaydust.tex backupmilkywaydust.tex
+latex milkywaydust
+latex milkywaydust
+latex milkywaydust
+bibtex milkywaydust
+latex milkywaydust
+latex milkywaydust
+dvipdf milkywaydust.dvi
+open milkywaydust.pdf &
