@@ -108,14 +108,19 @@ compare with near-infrared K-band brightness
 
 
 To detect higher A$_V$ sources in the dust maps, we decided to look up the value of A$_V$ at the center of each galaxy and 20\arcmin away in each of the four cardinal directions.  We could then individually examine sources which were significantly higher than the mean of the 20\arcmin radius.  As a baseline for what a significant excess is, we first looked up those values for 102 random positions in the sky.  
-We also looked up those values for each of the extragalactic sources in \citet{Rice_etal_1998}, the 70 brightest of which should already have been removed from the SFD98 maps, the nearby host galaxies used to calibrate the Cepheid-Supernova Ia distance ladder \citep{Riess_etal_2016}, and over 500 supernova host galaxies observed by Swift \citep{Brown_etal_2014_SOUSA}.  
+We looked up the values for each of the extragalactic sources in \citet{Rice_etal_1998}, the 70 brightest of which should already have been removed from the SFD98 maps.  For our scientific purposes, we also examined the nearby host galaxies used to calibrate the Cepheid-Supernova Ia distance ladder \citep{Riess_etal_2016}, over 700 supernova host galaxies observed by Swift \citep{Brown_etal_2014_SOUSA}.  
 The central and mean radial values are plotted in Figure \ref{fig_av}.  
 
 Most of the data cluster around the 1:1 line.  From the random positions, we set one and two sigma limits of 12 \% and 22\% which encompass 68\% and 95\% of the points, respectively.  We manually examine all points for which the central position has an A$_V$ of 12\% greater than (or less than) the mean of the points at 20 \arcmin.  
 
 
+Some sources appear to be partially removed, replacing the pixels with the median value of a nearby annulus.   
 
 
+Other values are not properly corrected for.
+In the case of M31
+
+The recommended value for the region around M31, as given in Appendix C of \citet{Schlegel_etal_1998},  is E(B-V)=0.062.  This is the value obtained from the NASA Extragalactic Database\footnote{https://ned.ipac.caltech.edu/} when searching the position of M31.  Since M31 is not removed from the maps, however, one obtains a value of E(B-V)=0.69 from the NASA/IPAC Infrared Science Archive from the website\footnote{https://irsa.ipac.caltech.edu/frontpage/} or python's astroquery.
 
 
 \begin{figure*}
@@ -125,6 +130,16 @@ Most of the data cluster around the 1:1 line.  From the random positions, we set
 \end{figure*}
 
 
+
+\begin{figure*}
+\plottwo{M51.png}{M51e.png}
+\caption{Left Panel: galaxies  Right Panel: A$_V$ v. radius from center in the four cardinal directions.
+\label{fig_av}}
+\end{figure*}
+
+
+
+
 \begin{table*}
 \caption{Problematic Galaxies}
 \label{table_templates}
@@ -132,16 +147,7 @@ Most of the data cluster around the 1:1 line.  From the random positions, we set
 \hline
 \hline
 Type    & SN Name & Date & Epoch & Range & reference \\
-        &         & (DD-MM-YYYY) & (Days) & (\AA) &  \\
-\hline
-Ia      & SN 2011fe & 13-09-2011 & Tmax 3.4 & 1265 – 25000 &   \\
-Ib/c    & SN~1994I  & 13-09-2011 & +3.4 & 1265 – 25000 &  \\
-IIP     & SN~1999em  & 13-09-2011 & +3.4 & 1265 – 25000 &   \\
-IIb     & SN~1993J  & 15-04-1993 & Texp+18 & 1265 – 25000 &   \\
-IIn     & SN~1994I  & 13-09-2011 & +3.4 & 1265 – 25000 &   \\
-SLSN-I  & Gaia16apd  & 13-09-2011 & +3.4 & 1265 – 25000 &   \\
-SLSN-I  & SN~1994I  & 13-09-2011 & +3.4 & 1265 – 25000 &   \\
-SLSN-II & SN~1994I  & 13-09-2011 & +3.4 & 1265 – 25000 &   \\
+
 
 
 

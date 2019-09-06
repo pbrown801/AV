@@ -2,12 +2,12 @@ This is BibTeX, Version 0.99d (TeX Live 2011)
 Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: milkywaydust.aux
 I couldn't open database file bibtex.bib
----line 37 of file milkywaydust.aux
+---line 50 of file milkywaydust.aux
  : \bibdata{milkywaydustNotes,bibtex
  :                                  }
 I'm skipping whatever remains of this command
 I couldn't open style file aasjournal.bst
----line 38 of file milkywaydust.aux
+---line 51 of file milkywaydust.aux
  : \bibstyle{aasjournal
  :                     }
 I'm skipping whatever remains of this command
