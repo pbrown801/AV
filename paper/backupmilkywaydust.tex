@@ -13,6 +13,10 @@
 \newcommand\aastex{AAS\TeX}
 \newcommand\latex{La\TeX}
 \usepackage{CJKutf8}
+\usepackage{graphicx} 
+\usepackage{subcaption} 
+\usepackage{caption} 
+
 
 %% Reintroduced the \received and \accepted commands from AASTeX v5.2
 %\received{July 1, 2016}
@@ -30,7 +34,7 @@
 %%
 %% You can add a light gray and diagonal water-mark to the first page 
 %% with this command:
-\watermark{DRAFT \today}
+%\watermark{DRAFT \today}
 %% where "text", e.g. DRAFT, is the text to appear.  If the text is 
 %% long you can control the water-mark size with:
 %  \setwatermarkfontsize{dimension}
@@ -124,29 +128,38 @@ The recommended value for the region around M31, as given in Appendix C of \cite
 
 
 \begin{figure*}
-\plotone{avplot.eps}
-\caption{The central value of A$_V$ is plotted with respect to the mean of the A$_V$ values 20\arcmin away in each of the four cardinal directions.  102 random positions are plotted in grey.  The sample from \citet{Rice_etal_1998} which should have already been removed are blue triangles.  Nearby galaxies used to calibrate the Cepheid-SN distance ladder \citep{Riess_etal_2016} are plotted as red triangles.  The sample of Swift supernovae that I care about are green triangles.  A 1:1 line shows perfect agreement between the values.
+\includegraphics{avboth.eps}
+\caption{Top panel: The central value of A$_V$ is plotted with respect to the mean of the A$_V$ values 20\arcmin away in each of the four cardinal directions.  102 random positions are plotted in grey.  The sample from \citet{Rice_etal_1998} which should have already been removed are blue triangles.  Nearby galaxies used to calibrate the Cepheid-SN distance ladder \citep{Riess_etal_2016} are plotted as red triangles.  The sample of Swift supernovae are green triangles.  A 1:1 line shows perfect agreement between the values.
+Bottom panel: A$_V$ differences normalized by the mean A$_V$ at 20\arcmin.  The fractional difference is fairly constant with A$_V$.  
+The fractional differences for the random locations have a standard deviation of 12\%.  This is used as the cutoff for 
 \label{fig_av}}
 \end{figure*}
 
 
 
-\begin{figure*}
-\plottwo{M51.png}{M51e.png}
+\begin{figure}
+\includegraphics{av_both.eps)
 \caption{Left Panel: galaxies  Right Panel: A$_V$ v. radius from center in the four cardinal directions.
 \label{fig_av}}
-\end{figure*}
+\end{figure}
 
 
 
+\begin{figure}
+  \begin{subfigure}[b]{0.4\textwidth}
+    \includegraphics[width=\textwidth]{M51.png}
+    \caption{Picture 1}
+    \label{fig:1}
+  \end{subfigure}
+  %
+  \begin{subfigure}[b]{0.4\textwidth}
+    \includegraphics[width=\textwidth]{M51e.png}
+    \caption{Picture 2}
+    \label{fig:2}
+  \end{subfigure}
+\end{figure}
 
-\begin{table*}
-\caption{Problematic Galaxies}
-\label{table_templates}
-\begin{tabular}{lccccc}
-\hline
-\hline
-Type    & SN Name & Date & Epoch & Range & reference \\
+
 
 
 
