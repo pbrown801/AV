@@ -28,25 +28,15 @@ testRa = Angle(testTabl.iloc[:,0])
 testDec = Angle(testTabl.iloc[:,1])
 
 compCoords = SkyCoord(testRa,testDec,frame='fk5')
+newVals = [None]*len(compCoords)
 
-for i in compCoords:
+for i in range(0,len(compCoords)):
 	# print(type(i.separation(sourceCoords)))
-	separations = i.separation(sourceCoords).arcminute
+	separations = compCoords[i].separation(sourceCoords).arcminute
 	within = np.less(separations,inTabl.iloc[:,3])
-	print(within)
-	correctedAVs = np.where(within,inTabl.iloc[:,4],np.nan)
-	print(correctedAVs)
-	# if separations < inTabl.iloc[:,4]:
-	# 	separations = True
-	# print(separations)
-	# print('-----\n')
+	correctedAVs = np.where(within,inTabl.iloc[:,4],None)
+	newVals[i] = next((item for item in correctedAVs if item is not None),None)
+compCoords = compCoords.to_string('hmsdms')
+finalVals = np.stack((compCoords,newVals),axis=1)
 
-
-
-# name = tabl.iloc[:,0]
-# rad = tabl.iloc[:,1]
-# dec = tabl.iloc[:,2]
-# radius = tabl.iloc[:,3]
-# av = tabl.iloc[:,4]
-# err = tabl.iloc[:,5]
-
+np.savetxt("corrected_av.csv", finalVals, delimiter=",",fmt='%s')
