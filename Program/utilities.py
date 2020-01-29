@@ -12,7 +12,7 @@ from astropy.table import Table
 from astropy.table import Column
 
 import matplotlib
-matplotlib.use("TkAgg")
+matplotlib.use("Tkag")
 import matplotlib.pyplot as plt
 
 import numpy as np
