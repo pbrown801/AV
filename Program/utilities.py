@@ -12,7 +12,7 @@ from astropy.table import Table
 from astropy.table import Column
 
 import matplotlib
-matplotlib.use("Tkag")
+#matplotlib.use("Tkag")
 import matplotlib.pyplot as plt
 
 import numpy as np
@@ -72,16 +72,16 @@ def get_coords(gals):
             start_coord: list of coordinates corresponding to center of galaxies in 'gals'
     """
     start_coord = []
-    bar = FillingCirclesBar('Loading galaxies', max = len(gals))
+#    bar = FillingCirclesBar('Loading galaxies', max = len(gals))
     for i in gals[:]: #gets all valid galaxies
         try:
             tempCoord = SkyCoord.from_name(i, frame = 'icrs')
             start_coord.append(tempCoord)
-            bar.next()
+#            bar.next()
         except NameResolveError:
             print('\nSkipping',i,'because it couldn\'t be found.')
             gals.remove(i)
-    bar.finish()
+#    bar.finish()
     return(gals,start_coord)
 
 def coord_breakup(coord):
@@ -166,6 +166,72 @@ def fourCoord(distance,ra,dec):
     return cardinals; #performs transformation of initial coordinate into cardinal coordinates
 
 
+
+
+def fourCoord_pb(distance,ra,dec):
+    """
+        Gets four coordinates a specified distance away from the center of the galaxy
+        Inputs:
+            distance: distance in arcminutes
+            ra: radial component of the coordinate
+            dec: declination component of the coordinate
+        Outputs:
+            cardinals: list of four coordinates *distance* arcminutes away from the center of the specified galaxy. (North, East, South, West)
+
+    #angle is from astropy.coordinates
+
+    """
+
+    cardinals = [None]*4 #n = 0, e = 1, s = 2, w = 3
+   
+    coord=SkyCoord(ra+' '+dec)
+
+
+    #n
+    decli = coord.dec.arcminute+distance
+    decl = Angle(decli,u.arcminute)
+    decl = Angle(decl.to_string(unit=u.degree),u.degree)
+    cardinals[0] = SkyCoord(ra=coord.ra, dec=decl)
+
+    #s
+    decli = coord.dec.arcminute-distance
+    decl = Angle(decli,u.arcminute)
+    decl = Angle(decl.to_string(unit=u.degree),u.degree)
+    cardinals[2] = SkyCoord(ra=coord.ra, dec=decl)
+
+    #e
+    # converting from arcminutes into right ascension seconds
+    # 24 h x 60 m/h x 60 s/m = 86400 sec
+    # 360 deg x 60 arcmin/deg x 60 arsec/arcmin = 1296000 arcsec
+    # in on arcminute = 60 arcsec x 86400 / 1296000 
+    ds = distance*4
+    ds/=math.cos(math.radians(coord.dec.degree))
+    h = coord.ra.hms.h
+    m = coord.ra.hms.m
+    s = coord.ra.hms.s+ds
+    (s,m,h) = timeFix(s,m,h) #keep time within allowed range
+    
+    rad = Angle((h,m,s), unit = u.hour)
+    rad = Angle(rad.to_string(unit=u.hour),u.hour)
+    cardinals[1] = SkyCoord(ra=rad, dec=coord.dec)
+
+
+    #w
+    ds=distance*(-4)
+    ds/=math.cos(math.radians(coord.dec.degree))
+    h = coord.ra.hms.h
+    m = coord.ra.hms.m
+    s = coord.ra.hms.s+ds
+    (s,m,h) = timeFix(s,m,h) #keep time within allowed range
+    rad = Angle((h,m,s), unit = u.hour)
+    rad = Angle(rad.to_string(unit=u.hour),u.hour)
+    cardinals[3] = SkyCoord(ra=rad, dec=coord.dec)
+
+
+    #print(cardinals)
+    return cardinals; #performs transformation of initial coordinate into cardinal coordinates
+
+
 def scaleChecker(a_v):
     avg = np.average(a_v)
     if avg >1.12*a_v[0][0]:
@@ -179,15 +245,15 @@ def checkCoords(ra,dec,gal_name):
     #get values for each arcminute
     # print('\nChecking Av values for',gal_name)
 
-    cardinals = fourCoord(20,ra,dec)
+    cardinals = fourCoord_pb(20,ra,dec)
     for i in range(0,4):
-        C = coordinates.SkyCoord(cardinals[i], frame = 'fk5')
+        C = coordinates.SkyCoord(cardinals[i], frame = 'icrs')
         table = IrsaDust.get_extinction_table(C,show_progress = False)
         curVal[i] = (table['A_SandF'][2])
     avgTwenty = np.average(curVal)
 
-    cardinals = fourCoord(0,ra,dec)
-    C = coordinates.SkyCoord(cardinals[0],frame = 'fk5')
+    cardinals = fourCoord_pb(0,ra,dec)
+    C = coordinates.SkyCoord(cardinals[0],frame = 'icrs')
     table = IrsaDust.get_extinction_table(C,show_progress = False)
     centerVal = (table['A_SandF'][2])
     if centerVal > 1.12*(avgTwenty):
@@ -217,16 +283,16 @@ def tableFill(distance, ra, dec, gal_name,file_obj):
     curVal = [None]*4 #n = 0, e = 1, s = 2, w = 3
     #get values for each arcminute
     print('\nGetting Av values for',gal_name)
-    bar = ChargingBar('Fetching', max = distance+1)
+    # bar = ChargingBar('Fetching', max = distance+1)
     for arc_minute in range(0,distance+1):
-        cardinals = fourCoord(arc_minute, ra, dec)
+        cardinals = fourCoord_pb(arc_minute, ra, dec)
         for i in range(0,4):
-            C = coordinates.SkyCoord(cardinals[i], frame = 'fk5')
+            C = coordinates.SkyCoord(cardinals[i], frame = 'icrs')
             table = IrsaDust.get_extinction_table(C,show_progress = False)
             curVal[i] = (table['A_SandF'][2])
         a_v[arc_minute] = tuple(curVal)
-        bar.next()
-    bar.finish()
+    #   bar.next()
+    #bar.finish()
     print('Generating table')
 
     n = [gal_name]
@@ -273,7 +339,7 @@ def picSaver(directory, ra, dec, galaxy_name):
         Outputs:
             None
     """
-    imagelist = IrsaDust.get_image_list(SkyCoord(ra,dec).fk5, image_type="100um", radius=2*u.degree)
+    imagelist = IrsaDust.get_image_list(SkyCoord(ra,dec).icrs, image_type="100um", radius=2*u.degree)
     image_file = download_file(imagelist[0],cache=True)
     image_data = fits.getdata(image_file, ext=0) #gets image from IRSA database
     plt.clf()
@@ -303,10 +369,10 @@ def graphMaker(directory, a_v, galaxy_name):
     plt.plot(x,a_v[:,2], color = "green", marker = ".", label = "South")
     plt.plot(x,a_v[:,3], color = "black", marker = ".", label = "West")
     #plt.axvline(x=majAxis[j])
-    plt.xlabel("Arcminutes from Center of Galaxy")
-    plt.ylabel("A_v Value")
+    plt.xlabel("Distance from Center of Galaxy [Arcminutes]")
+    plt.ylabel("A$_V$")
     plt.legend(loc='center right', shadow=True)
-    plt.suptitle("A_v Values by Arcminute")
+#    plt.suptitle("A$_V$ Values by Arcminute")
     plt.title(str(galaxy_name))
     plt.savefig(os.path.join(directory,'Graphs',(str(galaxy_name)+"e.png")))
     plt.clf()
