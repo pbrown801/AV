@@ -346,7 +346,33 @@ def picSaver(directory, ra, dec, galaxy_name):
     plt.figure(1)
     plt.title(str(galaxy_name))
     plt.imshow(image_data,cmap='gray')
+    #plt.colorbar()
+    plt.xlabel("arcminutes")
+    plt.ylabel("arcminutes")
+    plt.savefig(os.path.join(directory,'Pictures',(str(galaxy_name)+".png")))
+    plt.clf()
+
+def ebvpicSaver(directory, ra, dec, galaxy_name):
+    """
+        Gets image from IRSA for a given coordinate and saves to chosen directory
+        Inputs:
+            directory: directory to save files in
+            ra: radial component of center coordinate
+            dec: declination component of center coordinate
+            galaxy_name: name of current galaxy
+        Outputs:
+            None
+    """
+    imagelist = IrsaDust.get_image_list(SkyCoord(ra,dec).icrs, image_type="extinction", radius=2*u.degree)
+    image_file = download_file(imagelist[0],cache=True)
+    image_data = fits.getdata(image_file, ext=0) #gets image from IRSA database
+    plt.clf()
+    plt.figure(1)
+    plt.title(str(galaxy_name))
+    plt.imshow(image_data,cmap='gray')
     plt.colorbar()
+    plt.xlabel("arcminutes")
+    plt.ylabel("arcminutes")
     plt.savefig(os.path.join(directory,'Pictures',(str(galaxy_name)+".png")))
     plt.clf()
 

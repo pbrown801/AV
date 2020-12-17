@@ -234,5 +234,11 @@ picSaver('..', '12h45m08.591s', '-00d27m42.79s', galaxy_name)
 a_v=tableFill(40, '12h45m08.591s', '-00d27m42.79s', galaxy_name,'ngc4666')
 graphMaker('..', a_v, galaxy_name)
 
+galaxy_name='NGC300'
+picSaver('..', '00h54m53.48s', '-37d41m03.8s', galaxy_name)
+a_v=tableFill(40, '00h54m53.48s', '-37d41m03.8s', galaxy_name,'ngc300')
+graphMaker('..', a_v, galaxy_name)
+
+ebvpicSaver('..', '00h54m53.48s', '-37d41m03.8s', 'NGC300_ebv')
 
 
