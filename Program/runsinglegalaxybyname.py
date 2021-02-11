@@ -26,6 +26,7 @@ c=SkyCoord('1h33m50.904s 30d39m35.7901s')
 
 
 fourCoord_pb(5, '1h33m50.904s', '30d39m35.7901s')
+annulus(5, '1h33m50.904s', '30d39m35.7901s')
 
 '''
 
