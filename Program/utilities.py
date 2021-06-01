@@ -14,6 +14,9 @@ from astropy.table import Column
 import matplotlib
 #matplotlib.use("Tkag")
 import matplotlib.pyplot as plt
+from matplotlib import lines
+#help(plt.plot)
+
 
 import numpy as np
 
@@ -28,6 +31,54 @@ import time
 from array import array
 
 from progress.bar import ChargingBar,FillingCirclesBar
+
+def annulus(distance,ra,dec):
+#def annulus():
+    import math
+    import sys
+    from astropy import units as u
+    from astropy import coordinates
+    from astropy.coordinates import Angle,ICRS,SkyCoord
+
+    
+#    ra='12h00m00.0s'
+#    dec='00d00m00.00s'
+#    distance=60.0    
+    degreedistance=distance/60.0
+
+
+    """
+        Gets 360 coordinates a specified distance away from the center of the galaxy
+        Inputs:
+            distance: distance in arcminutes
+            ra: right ascension component of the coordinate
+            dec: declination component of the coordinate
+        Outputs:
+            ring_coords: list of coordinates *distance* arcminutes away from the center of the specified galaxy
+
+    """
+
+    ring_coords = [None]*360 
+    directions = [i for i in range(360)]
+#    directions = [0, 90, 180, 270, 360]
+    inputcoord=SkyCoord(ra+' '+dec)
+#    print(inputcoord)
+
+    for direction in directions:
+#        print(direction)
+        newdec=inputcoord.dec+Angle(degreedistance*math.cos(direction*2.0*3.14159/360.0),unit=u.degree)
+#        print(newdec)
+        newra=inputcoord.ra+Angle(math.cos(newdec.value*2.0*3.14159/360.0)*degreedistance*math.sin(direction*2.0*3.14159/360.0),u.degree)
+#        print(newra)
+
+        ring_coords[direction] = SkyCoord(ra=newra, dec=newdec)
+
+#    print(ring_coords)
+
+
+    return ring_coords; #performs transformation of initial coordinate into cardinal coordinates
+
+
 
 def csv_to_ascii(inFile,outFile):
     """
@@ -327,6 +378,132 @@ def tableFill(distance, ra, dec, gal_name,file_obj):
     return(a_v) #returns LIST of a_v values
 
 
+def tableFillplanck(distance, ra, dec, gal_name,file_obj):
+    """
+        Saves a table to Excel with Av values up to [distance] away from the center [ra, dec] in the four cardinal directions.
+        Inputs:
+            distance: distance from center in arcminutes
+            ra: radial component of central coordinate
+            dec: declination component of central coordinate
+            gal_name: name of current galaxy
+        Outputs:
+            a_v: list of lists of Av values at each arcminute away from center
+                -size(a_v) = [[Av * 4]*distance]
+
+        IN THE PROCESS OF CLEANING THIS UP
+        Things I think I don't need:
+            Table
+            DEAL WITH THIS LATER: 11/1/18
+            DEALING WITH THIS NOW: 11/20/18
+    """
+    a_v = [None]*(distance+1)
+    curVal = [None]*4 #n = 0, e = 1, s = 2, w = 3
+    #get values for each arcminute
+    print('\nGetting Av values for',gal_name)
+    # bar = ChargingBar('Fetching', max = distance+1)
+    for arc_minute in range(0,distance+1):
+        cardinals = fourCoord_pb(arc_minute, ra, dec)
+        for i in range(0,4):
+            C = coordinates.SkyCoord(cardinals[i], frame = 'icrs')
+            table = IrsaDust.get_extinction_table(C,show_progress = False)
+            curVal[i] = (table['A_SandF'][2])
+        a_v[arc_minute] = tuple(curVal)
+    #   bar.next()
+    #bar.finish()
+    print('Generating table')
+
+    n = [gal_name]
+    namesTable = Table([n], names=('n'))
+    final_name = namesTable.to_pandas()
+
+    av_table = Table(None)
+    Am = Column(name = 'Arcminute')
+    North = Column(name = 'North')
+    East = Column(name = 'East')
+    South = Column(name = 'South')
+    West = Column(name = 'West')
+    av_table.add_columns([Am,North, East, South, West])
+    # print(a_v)
+    for arcminute in range(0,len(a_v)):
+        av_table.add_row()
+        av_table[arcminute][0] = arcminute
+        for i in range(0,4):
+            av_table[arcminute][i+1] = a_v[arcminute][i]
+    av_table.add_row()
+    # print(av_table)
+
+    for i in range(0,5): #this adds a blank line to the table to separate queries
+        av_table[arcminute+1][i] = None
+
+    final_vals = av_table.to_pandas()
+    from pandas import ExcelWriter
+    final_name.to_csv(file_obj, header =False, index = False)
+    final_vals.to_csv(file_obj, header =True, index = False, sep = ',')
+
+    return(a_v) #returns LIST of a_v values
+
+
+
+def tableFill360(distance, ra, dec, gal_name,file_obj):
+    """
+        Saves a table to Excel with Av values up to [distance] away from the center [ra, dec] in the 360 degree angle directions.
+        Inputs:
+            distance: distance from center in arcminutes
+            ra: radial component of central coordinate
+            dec: declination component of central coordinate
+            gal_name: name of current galaxy
+        Outputs:
+            a_v: list of lists of Av values at each arcminute away from center
+                -size(a_v) = [[Av * 360]*distance]
+
+    """
+    a_v = [None]*(distance+1)
+    curVal = [None]*360 #n = 0, e = 1, s = 2, w = 3
+    #get values for each arcminute
+    print('\nGetting Av values for',gal_name)
+    # bar = ChargingBar('Fetching', max = distance+1)
+    for arc_minute in range(0,distance+1):
+        cardinals = fourCoord_pb(arc_minute, ra, dec)
+        for i in range(0,4):
+            C = coordinates.SkyCoord(cardinals[i], frame = 'icrs')
+            table = IrsaDust.get_extinction_table(C,show_progress = False)
+            curVal[i] = (table['A_SandF'][2])
+        a_v[arc_minute] = tuple(curVal)
+    #   bar.next()
+    #bar.finish()
+    print('Generating table')
+
+    n = [gal_name]
+    namesTable = Table([n], names=('n'))
+    final_name = namesTable.to_pandas()
+
+    av_table = Table(None)
+    Am = Column(name = 'Arcminute')
+    North = Column(name = 'North')
+    East = Column(name = 'East')
+    South = Column(name = 'South')
+    West = Column(name = 'West')
+    av_table.add_columns([Am,North, East, South, West])
+    # print(a_v)
+    for arcminute in range(0,len(a_v)):
+        av_table.add_row()
+        av_table[arcminute][0] = arcminute
+        for i in range(0,4):
+            av_table[arcminute][i+1] = a_v[arcminute][i]
+    av_table.add_row()
+    # print(av_table)
+
+    for i in range(0,5): #this adds a blank line to the table to separate queries
+        av_table[arcminute+1][i] = None
+
+    final_vals = av_table.to_pandas()
+    from pandas import ExcelWriter
+    final_name.to_csv(file_obj, header =False, index = False)
+    final_vals.to_csv(file_obj, header =True, index = False, sep = ',')
+
+    return(a_v) #returns LIST of a_v values
+
+
 
 
 def picSaver(directory, ra, dec, galaxy_name):
@@ -386,15 +563,19 @@ def graphMaker(directory, a_v, galaxy_name):
             galaxy_name: name of current galaxy
         Outputs:
             None
+
+        CB_color_cycle = ['#377eb8', '#ff7f00', '#4daf4a',
+                  '#f781bf', '#a65628', '#984ea3',
+                  '#999999', '#e41a1c', '#dede00']
     """
     x = np.arange(len(a_v))
     a_v = np.array(a_v)
     plt.clf()
     plt.figure(1)
-    plt.plot(x,a_v[:,0], color = "blue", marker = ".", label = "North")
-    plt.plot(x,a_v[:,1], color = "red", marker = ".", label = "East")
-    plt.plot(x,a_v[:,2], color = "green", marker = ".", label = "South")
-    plt.plot(x,a_v[:,3], color = "black", marker = ".", label = "West")
+    plt.plot(x,a_v[:,0], color = '#00429d', marker = "+", linestyle='solid', label = "North")
+    plt.plot(x,a_v[:,1], color = '#73a2c6', marker = "o", linestyle='dotted', label = "East")
+    plt.plot(x,a_v[:,2], color = '#f4777f', marker = "x", linestyle='dashdot', label = "South")
+    plt.plot(x,a_v[:,3], color = '#93003a', marker = "s", linestyle='dashed', label = "West")
     #plt.axvline(x=majAxis[j])
     plt.xlabel("Distance from Center of Galaxy [Arcminutes]")
     plt.ylabel("A$_V$")
@@ -403,57 +584,4 @@ def graphMaker(directory, a_v, galaxy_name):
     plt.title(str(galaxy_name))
     plt.savefig(os.path.join(directory,'Graphs',(str(galaxy_name)+"e.png")))
     plt.clf()
-
-
-
-def annulus(distance,ra,dec):
-    """
-        Gets 360 coordinates a specified distance away from the center of the galaxy
-        Inputs:
-            distance: distance in arcminutes
-            ra: right ascension component of the coordinate
-            dec: declination component of the coordinate
-        Outputs:
-            ring_coords: list of coordinates *distance* arcminutes away from the center of the specified galaxy
-
-    #angle is from astropy.coordinates
-
-    """
-
-    ring_coords = [None]*360 
-    directions = [i for i in range(360)]
-#    directions = [0, 90, 180, 270, 360]
-    coord=SkyCoord(ra+' '+dec)
-    print(coord)
-
-    for direction in directions:
-        print(direction)
-        decli = coord.dec.arcminute+distance*math.cos(direction*2.0*3.14159/360.0)
-        #print(math.cos(direction*2.0*3.14159/360.0))
-        print(decli)
-        decl = Angle(decli,u.arcminute)
-        decl = Angle(decl.to_string(unit=u.degree),u.degree)
-        coord = SkyCoord(ra=coord.ra, dec=decl)
-        #print(coord)
-        # converting from arcminutes into right ascension seconds
-        # 24 h x 60 m/h x 60 s/m = 86400 sec
-        # 360 deg x 60 arcmin/deg x 60 arsec/arcmin = 1296000 arcsec
-        # in on arcminute = 60 arcsec x 86400 / 1296000 
-        ds = distance*4*math.sin(direction*2*3.14159/360.0)
-        ds/=math.cos(math.radians(coord.dec.degree))
-        h = coord.ra.hms.h
-        m = coord.ra.hms.m
-        s = coord.ra.hms.s+ds
-        (s,m,h) = timeFix(s,m,h) #keep time within allowed range
-    
-        rad = Angle((h,m,s), unit = u.hour)
-        rad = Angle(rad.to_string(unit=u.hour),u.hour)
-        #print(SkyCoord(ra=rad, dec=decl))
-        ring_coords[direction] = SkyCoord(ra=rad, dec=decl)
-
-#    print(ring_coords)
-
-
-    return ring_coords; #performs transformation of initial coordinate into cardinal coordinates
-
 

@@ -125,8 +125,6 @@ graphMaker('..', a_v, galaxy_name)
 
 
 
-
-
 galaxy_name='NGC4258'
 picSaver('..', '12h18m57.5046s', '+47d18m14.303s', galaxy_name)
 a_v=tableFill(40, '12h18m57.5046s', '+47d18m14.303s', galaxy_name,'ngc258')
@@ -183,12 +181,6 @@ picSaver('..', '00h42m44.5s', '+41d16m09s', galaxy_name)
 a_v=tableFill(40, '00h42m44.5s', '+41d16m09s', galaxy_name,'m31')
 graphMaker('..', a_v, galaxy_name)
 
-galaxy_name='NGC88'
-picSaver('..', '00h21m22.12s', '-48d38m24.6s', galaxy_name)
-a_v=tableFill(40, '00h21m22.12s', '-48d38m24.6s', galaxy_name,'ngc88')
-graphMaker('..', a_v, galaxy_name)
-
-
 
 
 
@@ -212,9 +204,9 @@ a_v=tableFill(40, '00h21m22.12s', '-48d38m24.6s', galaxy_name,'ngc88')
 graphMaker('..', a_v, galaxy_name)
 
 
-galaxy_name='NGC88'
-picSaver('..', '00h21m22.12s', '-48d38m24.6s', galaxy_name)
-a_v=tableFill(40, '00h21m22.12s', '-48d38m24.6s', galaxy_name,'ngc88')
+galaxy_name='NGC918'
+picSaver('..', '02h25m50.84s', '+18d29m46.5s	', galaxy_name)
+a_v=tableFill(40, '02h25m50.84s', '+18d29m46.5s	', galaxy_name,'ngc918')
 graphMaker('..', a_v, galaxy_name)
 
 
