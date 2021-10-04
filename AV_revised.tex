@@ -1,0 +1,173 @@
+
+\documentclass[twocolumn]{aastex63}
+%% \documentclass[arguments]{aastex63}
+%%
+%% \documentclass[twocolumn,linenumbers,trackchanges]{aastex63}
+%%
+\newcommand\aastex{AAS\TeX}
+\newcommand\latex{La\TeX}
+%\include{subcaption}
+%\usepackage{caption}
+
+\shorttitle{Galaxian Contamination in Galactic Reddening Maps}
+\shortauthors{Brown \& Walker}
+%%
+
+\begin{document}
+
+\title{Galaxian Contamination in Galactic Reddening Maps}
+
+
+\correspondingauthor{Peter J. Brown}
+\email{pbrown@physics.tamu.edu}
+
+\author[0000-0001-6272-5507]{Peter J. Brown}
+\affil{Department of Physics and Astronomy,
+Texas A\&M University, 4242 TAMU, College Station, TX 77843, USA }
+\affil{George P. and Cynthia Woods Mitchell Institute for Fundamental Physics \& Astronomy}
+
+\author{Tate Walker}
+\affil{Department of Aerospace Engineering,
+Texas A\&M University, 4242 TAMU, College Station, TX 77843, USA }
+
+
+\begin{abstract}
+
+Estimating the amount of foreground extinction due to the Milky Way dust along the line of sight is often a first step in determining the luminosity of an object.  The amount of Galactic dust inferred by infrared emission maps can be contaminated by infrared light from nearby galaxies.  By comparing extinction values at and around the location of nearby galaxies, we compile a list of 95 galaxies which likely contaminate the maps with an excess or improperly-subtracted galaxian infrared emission and tabulate our recommend values for the MW contribution.  In addition to M82, which inspired this work, six more sources have an excess visual extinction A$_V$ of at least 0.05 mag greater than our annular values, including M83, NGC1313, NGC6822, NGC918, UGC11501, and  UGC11797. M33 is shown to be oversubtracted. NGC88 and the outskirts of NGC4258 are located in gaps in the IRAS imaging.  The recommended dust map values for the LMC, SMC, and M31 may also not be correctly returned by some software packages. Accurate reddening estimates are important for measuring stellar and supernova luminosities in these nearby galaxies.
+
+\end{abstract}
+
+\keywords{dust: general, Milky Way: dust}
+
+
+\section{Introduction} \label{sec:intro}
+
+As luminosity is a fundamental property of astrophysical objects, properly correcting for the extinction of light due to dust is important.  Accurate luminosities are needed for calculating energy budgets, sizes of objects, and the calibration and use of astrophysical objects as standard candles to measure distances in the universe.
+
+Dust extinction can occur anywhere along the line of sight from an object to the observer, including circumstellar dust, dust in the host galaxy of an object, circumgalactic dust, intergalactic dust, and dust in our own Milky Way galaxy.  These multiple components can make a full determination of the extinction complicated, but it is usually assumed that the component of dust extinction arising from the MW is the best understood.  The all-sky dust reddening maps of \citet{Schlegel_etal_1998}, hereafter referred to as SFD98, improved on the earlier HI estimates of \citet{Burstein_Heiles_1982} by  calibrating the luminosity at 100 $\mu$m from the Diffuse InfraRed Background Experiment on the Cosmic Background Explorer (DIRBE/COBE) and the Infrared Astronomical Satellite (IRAS) and converting it into the V-band extinction using the colors of elliptical galaxies.  These maps have made it convenient to look up the SFD98 reddening (or the rescaling by
+\citealp{Schlafly_Finkbeiner_2011}) via the NASA Extragalactic Database (NED\footnote{\url{https://ned.ipac.caltech.edu/}}; \citealp{Mazzarella_etal_2001}) 
+or other electronic queries without having to understand the data,  read the paper, or notice the warnings from NED\footnote{\url{https://ned.ipac.caltech.edu/classic/help/faq3.html\#3a}}.  Combined with the mean value of R$_V$=3.1 from \citet{Fitzpatrick_1999}, one can compute the extinction as a function of wavelength or at the effective wavelength of a filter for a particular source.
+%and ignoring the variations in the Milky Way \citep{Clayton_Cardelli_1988} one has the extinction as a function of wavelength or can also implicitly assume those as well as the elliptical galaxy spectrum used by SFD98 and have the extinction readily computed in a number of common passbands.  
+Such ease, however, often makes it too easy to overlook the details and complications extant in the data set.
+
+ \citet{Dalcanton_etal_2009} mentioned in a footnote that the SFD98 maps were clearly contaminated by M82, brought to our knowledge through studies of the extinction toward the supernova (SN) 2014J \citep{Foley_etal_2014J}.  \citet{Johnson_etal_2009} cautioned about not just the contamination of M81 and M82 but also the highly variable region nearby.  \citet{Chiang_Menard_2019} found that even distant galaxy clusters leave a small imprint on the dust maps. As dust reddening from anywhere has strong consequences in the ultraviolet, the authors were led to ask the question ``Which nearby galaxies might be contaminating the dust maps in this same way?''
+
+In this short paper we describe how we searched for examples of contaminating galaxies and give a table of recommended extinction values for the ones we found.  
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Analysis} \label{sec_analysis}
+  
+
+%Having one example to work from, the nearby, extreme starburst galaxy M82, we began our search by looking at the next eleven closest galaxies hosting supernovae observed by Swift (see e.g. \citealp{Brown_etal_2015_10}).  
+
+To detect likely point sources from galaxy contaminants in the dust maps, we searched for excesses in A$_V$ at the center of each galaxy of interest compared to the mean of the values 20\arcmin\ away in each of the four cardinal directions.  We could then individually examine sources which were significantly higher than the mean of the 20\arcmin\ radius.  As a baseline for what a significant excess is, we first looked up the A$_V$ values (via IrsaDust.get\_extinction\_table in the Astroquery Python package) for 102 random positions in the sky.  The central and mean radial values are plotted in Figure \ref{fig_av}.  
+As expected, most of the points cluster around the 1:1 line compared to the mean value in the surrounding points, and the scatter is a consistent fraction of the central value (note that both axis are on a log scale).  From the random positions, we set one and two sigma limits of 12\% and 22\% which encompass 68\% and 95\% of the points, respectively. 
+A few points lie significantly below the 1:1 line due to bright spots in the angular regions.  
+
+
+\begin{figure}
+\includegraphics{avboth.eps}
+\caption{Top panel: The central value of A$_V$ is plotted with respect to the mean of the A$_V$ values 20\arcmin\ away in each of the four cardinal directions.  102 random positions are plotted in grey.  The sample from \citet{Rice_etal_1988} which should have already been removed are blue triangles.  Nearby galaxies used to calibrate the Cepheid-SN distance ladder \citep{Riess_etal_2016} are plotted as red squares.  The sample of Swift supernovae are green crosses.  A 1:1 line shows perfect agreement between the values.
+Bottom panel: A$_V$ differences normalized by the mean A$_V$ at 20\arcmin.  The fractional difference is fairly constant with A$_V$.  
+The fractional differences for the random locations have a standard deviation of 12\%.  This is used as the cutoff for our manual examination.
+\label{fig_av}}
+\end{figure}
+
+
+
+
+We queried the A$_V$ values at the location of each of the extragalactic sources in \citet{Rice_etal_1988}, the 70 brightest of which should already have been removed from the SFD98 maps.  For our scientific purposes, we also tabulated the nearby host galaxies used to calibrate the Cepheid-Supernova Ia distance ladder \citep{Riess_etal_2016}, the SINGS sample \citep{Kennicutt_etal_2003}, and over 700 supernova host galaxies observed by Swift \citep{Brown_etal_2014_SOUSA}.   We manually examine the fields of all galaxies for which the central position has an A$_V$ of 12\% greater than the mean of the points at 20\arcmin~and all of the sources from \citet{Rice_etal_1988}.
+
+
+For each galaxy above our excess threshold, a square InfraRed Space ATLAS image (based on IRAS imaging) 100 \micron\ image  80\arcmin\ across was created as well as a plot with the A$_V$ as a function of radius out to 20\arcmin\ in each of the cardinal directions in steps of 1\arcmin.  Examples are shown in Figure \ref{fig_images}.
+Both of these were visually examined to assess if the central excess was likely due to the flux of the galaxy, part of a region with highly variable infrared flux from the MW, or both.  
+%If the galaxy seemed to contribute to the excess, a value was chosen representing our best estimate of the $A_V$ at the galaxy location and a radius within which that value should be used.  For an isolated source, the $A_V$ corresponds to the background level.  For galaxies in a region with a highly-variable foreground MW IR emission, such as a gradient, patchy emission, or artifacts, this was more subjective and used the IRAS image as a guide.
+If the galaxy seemed to contribute to the excess, a radius was determined at which the galaxian contribution dropped below the background level.  We then queried the $A_V$ values at 360 locations at that radius.  We report the median value and standard deviation of those values in Table 1.   For galaxies in a region with a highly-variable foreground MW IR emission, such as a gradient, patchy emission, or artifacts, more sophisticated two-dimensional modeling or cross correlation with other forms of reddening estimates might better sample the contaminated region. 
+Though imperfect, we believe our values to more accurately reflect the true MW reddening at the location of the galaxies than the look up tables used based on \citet{Schlegel_etal_1998}.  
+
+Some sources appear to be partially removed, replacing the pixels with the median value of a nearby annulus.  The replaced region, however, is in some cases too small and the replacement value too bright in the regions passing our cuts.  M51 and M83, as shown in Figure \ref{fig_images}, are two examples of this.
+Visual examination of the \citet{Rice_etal_1988} galaxies was done to find galaxies with poor subtraction which nevertheless did not meet our criteria of having a significant central excess.  M33 is a striking example which appears to be oversubtracted, as shown in \ref{fig_images2}.  In many cases our recommended value is only slightly smaller than the map value ($\sim$0.01 mag), but its use may avoid a small bias.  In some instances, such as NGC2442 and NGC4666, our recommended value is close to the replacement value used in the maps.  The complexity of the location, however, leads to a higher recommended uncertainty, because the galaxy line of sight may or may not pass through the brighter regions of the foreground emission.  Including a higher uncertainty for these objects recognizes that our knowledge of the MW dust is not as complete as is often assumed.
+
+Other values returned from the tools are not properly corrected for the suggested corrections for the nearby Large and Small Magellanic clouds and M31 given in Appendix C of SFD98.  
+The recommended value for the region around M31, for example, is E(B-V)=0.062 (SFD98; 0.055 in the \citealp{Schlafly_Finkbeiner_2011} system).  The \citet{Schlafly_Finkbeiner_2011} value of 0.055 is obtained from the NASA Extragalactic Database\footnote{https://ned.ipac.caltech.edu/} when searching the position of M31.  Since M31 is not removed from the maps, however, one obtains a value of E(B-V)=0.60 (a factor of 10 larger) from the NASA/IPAC Infrared Science Archive from the website\footnote{https://irsa.ipac.caltech.edu/frontpage/} or Astroquery in python.  This field is shown in the second panel of Figure \ref{fig_images2}.
+
+
+Another problematic field we found was in the region of NGC4258.  NGC4258 is an important rung of the extragalactic distance scale because of its geometrically-determined distance which is used either as a calibration of or a check of Cepheid distances \citep{Macri_etal_2006, Humphreys_etal_2013,Hoffmann_etal_2016, Reid_etal_2019}.
+%\footnote{\citet{Fausnaugh_etal_2015} found an unusually grey extinction law for the Cepheids in NGC4258. It is beyond the scope of this paper to evaluate whether an incorrect value of the line of sight MW extinction could have a significant effect.}.  
+There is a clear point source visible in some of the IRAS images.  In most of the images available from the NASA/Infrared Processing and Analysis Center (IPAC), however, NGC4258 falls in a gap between data.  This results in a discontinuity in the combined images.  The central value of A$_V$ derived from the maps is small and appears correct, so analyses using the galaxy value appear fine (e.g. \citealp{Macri_etal_2006}).  Using values at the positions of individual objects in the outer fields in the south and east could overestimate the small MW reddening by $\sim50\%$, as shown in  Figure \ref{fig_images2}.  This would be a small effect but potentially significant for objects with low host reddening in a science field where precision and accuracy are critical.  NGC88 also falls in a gap.  For both of these objects we provide a recommended value within a radius around the galaxy center based on values outside the gap.
+
+ Reading the mask values from the SFD data product would catch some of the sources in or near the SMC, LMC, or M31 or for which no IRAS data existed and the COBE/DIRBE maps were used instead. 
+These oversights could just be treated as a bug and corrected in these archives.  Since past work may have been incorrectly analyzed, we are publishing this research article as well as notifying the developers in order to promote the best science in past and future analyses.  
+
+The list of contaminating galaxies is given in Table 1 with their central coordinates, the radius of contamination, our estimate for A$_V$, and our estimated uncertainty on A$_V$. 
+The values for the LMC, SMC and M31 recommended by Appendix C of SFD98 are corrected to the \citet{Schlafly_Finkbeiner_2011} system and listed in Table 1 along with the recommended value for M82 from \citet{Dalcanton_etal_2009}.  Thus one could query this table by position in order to update MW reddening values obtained from the IR maps.  We note, however, that work requiring precise line of sight extinctions through these large areas should utilize other methods to better constrain the minimum position-dependent line of sight extinction contributed by the Milky Way in these extended areas (e.g. \citealp{Haschke_etal_2011}).
+
+
+
+In this paper we have focused on the commonly-used SFD98 maps.  Visual inspection of the galaxies flagged in this analysis using the \citet{Planck_etal_2014} maps reveal the same issues of contamination.  The \citet{Planck_etal_2014} contamination is actually more severe because the extragalactic sources not in the point source catalog were not removed from the IRIS map, while most of the corrections discussed previously were for sources not fully subtracted in SFD98.  Our spot checks of significant sources found in SFD are also found in the \citet{Planck_etal_2014} dustmaps obtained through the dustmaps utility. We recommend that members of the Planck team who understand the data best make a best effort attempt to remove these extragalactic contaminants, possibly using two-dimensional interpolation, power spectra, or gaussian processes to better fill in the contaminated regions than the median-filled circles used here and by SFD.   Other methods of reddening determinations, such as stellar colors \citep{Green_etal_2019} and HI maps \citep{Lenz_etal_2017}, should also be consulted if a precise extinction is needed.  Understanding the limitations (such as low HI column density for HI reddening; \citealp{Lenz_etal_2017}) of any method is still important. 
+
+
+Many corrections for extinction already utilize the intrinsic colors of an object (e.g. type Ia supernovae; \citealp{Phillips_etal_1999}) to determine the total reddening to it.  An incorrect measure of the MW reddening could be compensated by a larger or smaller value of the host galaxy reddening, yielding the same total extinction if the MW and host galaxy reddening laws are the same.  In the  limiting case of negligible host reddening the flux could be overcorrected, resulting in bluer colors which might be interpreted as zero or negative reddening depending on the assumed priors in the SN fitting.
+
+
+\begin{figure*}
+\begin{tabular}{cc}
+ \includegraphics[width=65mm]{NGC918.png} &   \includegraphics[width=65mm]{NGC918e.png} \\
+%(a) first & (b) second \\[6pt]
+  \includegraphics[width=65mm]{NGC1371.png} &   \includegraphics[width=65mm]{NGC1371e.png} \\
+%(c) third & (d) fourth \\[6pt]
+ \includegraphics[width=65mm]{M51.png} &   \includegraphics[width=65mm]{M51e.png} \\
+%(c) third & (d) fourth \\[6pt]
+ \includegraphics[width=65mm]{M83.png} &   \includegraphics[width=65mm]{M83e.png} \\
+%(c) third & (d) fourth \\[6pt]
+\end{tabular}
+\caption{100 \micron IRAS images (80\arcmin $\times$ 80\arcmin with North pointing up) on the left and the corresponding plots of A$_V$ v. distance from center for a few galaxies illustrating the range of contamination.  The top panel shows the small but clear contribution of NGC1371.  The second panel shows the more complicated field of NGC1448.  The bottom two panels show the uncomplete subtraction of M51 and M83.}\label{fig_images}
+\end{figure*}
+
+
+
+\begin{figure*}
+\begin{tabular}{cc}
+  \includegraphics[width=65mm]{M33.png} &   \includegraphics[width=65mm]{M33e.png} \\
+%(a) first & (b) second \\[6pt]
+ \includegraphics[width=65mm]{M31.png} &   \includegraphics[width=65mm]{M31e.png} \\
+%(c) third & (d) fourth \\[6pt]
+ \includegraphics[width=65mm]{NGC4258.png} &   \includegraphics[width=65mm]{NGC4258e.png} \\
+%(c) third & (d) fourth \\[6pt]
+ \includegraphics[width=65mm]{NGC88.png} &   \includegraphics[width=65mm]{NGC88e.png} \\
+%(c) third & (d) fourth \\[6pt]
+\end{tabular}
+\caption{100 \micron IRAS images (80\arcmin $\times$ 80\arcmin with North pointing up) on the left and the corresponding plots of A$_V$ versus distance from center for a few galaxies illustrating the range of contamination. In the first row, M33 has been oversubtracted, so the MW reddening would be underestimated.  In the second panel, M31 has not been removed, with the recommended value from the appendix of SFD98 being reported by NED but not IRSA.  The bottom panels show discontinuities in the reddening values near NGC4258 and NGC88 due to data gaps in the IRAS imaging.  }\label{fig_images2}
+\end{figure*}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%
+\section{Summary\label{sec_summary}}
+
+In summary, we have searched for galaxies whose infrared emission might significantly contaminate the IRAS images resulting in a overestimate of the foreground MW dust reddening.  We provide a table of such galaxies, their coordinates, our recommended values on the \citet{Schlafly_Finkbeiner_2011} system, and the radius with which to use replacement values from those looked up by default from the SFD98 maps via NED or Astroquery \citep{Ginsburg_etal_2019}.  This will be communicated to the developers of such tools, and we make available our code to query our table or the dust maps as appropriate\footnote{https://github.com/pbrown801/AV https://zenodo.org/badge/latestdoi/166308993}.  We recommend, however, that users make themselves aware of the issues of the data they use by reading the original papers even when the data products are made easily accessible via automated sources.
+
+\acknowledgments
+We appreciate useful discussions with D. Schlegel and D. Finkbeiner about the SFD98 maps and comments on the manuscript from N. Suntzeff.  Most of this work was done as a student project as part of Texas A\&M's Aggie Research Program.  This work was also supported by the Mitchell Institute for Fundamental Physics and Astronomy and NASA grant 80NSSC20K0456. 
+
+% Facilities 
+
+\vspace{5cm}
+\facilities{(IRAS)}
+
+\software{ astropy \citep{Astropy_2013,Astropy_2018}, astroquery \citep{Ginsburg_etal_2019}, scipy \citep{Scipy_2001,Scipy_2019} }
+
+\clearpage
+
+\bibliographystyle{aasjournal}
+\bibliography{bibtex}{}
+
+\clearpage
+\begin{longrotatetable}
+\input{Brown_Walker_table_1_newSN.tex}
+\end{longrotatetable}
+%\clearpage
+
+
+\end{document}

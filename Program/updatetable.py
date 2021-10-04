@@ -35,8 +35,12 @@ def annulusmedian(distance,ra_central,dec_central):
     """
 
     ring_coords = [None]*360 
+#    ring_coords = [None]*135 
     directions = [i for i in range(360)]
-    AVloop = [i for i in range(360)]
+#special for NGC4258
+#    directions = [i for i in range(0,135,1)]
+
+    AVloop = [None]*360
 
 #    print('just before skycoord ',ra_central, ' ', dec_central)
 
@@ -52,12 +56,14 @@ def annulusmedian(distance,ra_central,dec_central):
          
         ring_coords[direction] = SkyCoord(ra=newra, dec=newdec)
 #        print(ring_coords)
-#    print(ring_coords)
         AVloop[direction]=getAV(ring_coords[direction])
 
+# used for NGC88
+#    AVmedian=np.median(AVloop[60:180])
+#    AVstddev=np.std(AVloop[60:180])
     AVmedian=np.median(AVloop)
     AVstddev=np.std(AVloop)
-
+ 
     return AVmedian, AVstddev; #performs transformation of initial coordinate into cardinal coordinates
 
 
@@ -71,6 +77,8 @@ def updatetable():
     import numpy as np
     import pandas as pd
 
+#.    used for redoing galaxies over part of the annulus
+#    inFile = 'Brown_Walker_table_M106.dat'
     inFile = 'Brown_Walker_table_1.dat'
     inTable = pd.read_csv(inFile,header=None,delimiter=' ')
     names = inTable.iloc[:,0]
@@ -90,7 +98,7 @@ def updatetable():
 
 
     for j in index:
-        i=j+50
+        i=j
         coords=sourceCoords[i] 
 #        print('i')
 #        print(coords)
